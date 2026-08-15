@@ -1,7 +1,8 @@
 import { useLocalStorage } from '@vueuse/core'
+import { PREFIX_URL } from '@/utils/ky'
 
 const PENDING_ACTIVITY_KEY = 'emos_fund_pending_activity_code'
-const SIGN_IN_URL = '/api/sign?state=emos_fund'
+const SIGN_IN_URL = `${PREFIX_URL}api/sign?state=emos_fund`
 
 const pendingActivityCode = useLocalStorage<string | null>(PENDING_ACTIVITY_KEY, null)
 

@@ -1,8 +1,10 @@
 import ky from 'ky'
 import { useSignStore } from '@/stores/sign'
 
+export const PREFIX_URL = import.meta.env.PROD ? 'https://emos.best/' : '/'
+
 const instance = ky.create({
-  prefixUrl: import.meta.env.PROD ? 'https://emos.best/' : '/',
+  prefixUrl: PREFIX_URL,
   timeout: 1000 * 30,
   retry: 0,
   hooks: {
