@@ -1,5 +1,6 @@
 import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
+import { useUserStore } from '@/stores/user'
 
 export const useSignStore = defineStore(
   'sign',
@@ -14,6 +15,7 @@ export const useSignStore = defineStore(
 
     function signOut() {
       user_token.value = ''
+      useUserStore().clear()
     }
 
     return {

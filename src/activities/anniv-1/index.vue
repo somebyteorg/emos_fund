@@ -4,6 +4,7 @@
       <header :class="{ 'intro-visible': introReady }" class="intro-item flex h-20 items-center justify-between border-b border-white/10">
         <RouterLink class="text-xs tracking-[0.28em] text-[#d5b36a]" to="/">EMOS FUND</RouterLink>
         <div class="flex items-center gap-5 text-sm">
+          <UserAccount v-if="sign.isSignedIn" />
           <RouterLink v-if="sign.isSignedIn" :to="{ name: 'orders' }" class="text-white/60 transition hover:text-white">我的订单</RouterLink>
           <button v-if="sign.isSignedIn" class="text-white/45 transition hover:text-white" @click="sign.signOut">退出</button>
           <button v-else class="border border-[#d5b36a]/60 px-4 py-2 text-[#f6e5bd] transition hover:bg-[#d5b36a] hover:text-[#171514]" @click="signIn">登录</button>
@@ -160,6 +161,7 @@
   import { fundApi } from '@/api/fund'
   import type { FundActivity, FundTier } from '@/types/fund'
   import { useSignStore } from '@/stores/sign'
+  import UserAccount from '@/components/UserAccount.vue'
   import { startSignIn } from '@/utils/auth'
   import { getApiErrorMessage } from '@/utils/api-error'
   import { formatDateRange, formatDateTime, formatNumber } from '@/utils/format'

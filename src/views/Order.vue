@@ -1,14 +1,17 @@
 <template>
   <main class="min-h-screen bg-[#f7f4ee] text-stone-900">
-    <div class="mx-auto flex min-h-screen max-w-6xl flex-col px-6 py-8 sm:px-8 lg:py-10">
-      <header class="flex items-center justify-between border-b border-stone-200 pb-6">
+    <div class="mx-auto flex min-h-screen max-w-6xl flex-col px-5 py-6 sm:px-8 sm:py-8 lg:py-10">
+      <header class="flex flex-wrap items-center justify-between gap-4 border-b border-stone-200 pb-6">
         <RouterLink class="text-xl font-semibold text-stone-900 transition hover:text-stone-500" to="/">我的订单</RouterLink>
-        <button
-          class="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md border border-stone-900 bg-stone-900 px-3.5 text-sm font-medium leading-none text-white transition hover:border-stone-700 hover:bg-stone-700"
-          type="button"
-          @click="signOut">
-          退出登录
-        </button>
+        <div class="flex items-center gap-4">
+          <UserAccount v-if="sign.isSignedIn" />
+          <button
+            class="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md border border-stone-900 bg-stone-900 px-3.5 text-sm font-medium leading-none text-white transition hover:border-stone-700 hover:bg-stone-700"
+            type="button"
+            @click="signOut">
+            退出登录
+          </button>
+        </div>
       </header>
 
       <div class="flex min-w-0 flex-1 flex-col">
@@ -28,9 +31,12 @@
               </div>
             </div>
             <p v-if="orderError" class="mb-6 border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700" role="alert">{{ orderError }}</p>
-            <section class="border border-stone-200 bg-white p-7 sm:p-9">
+
+            <section class="border border-stone-200 bg-white p-6 sm:p-9">
               <div class="border-b border-stone-200 pb-7">
-                <RouterLink :to="`/${currentOrder.activity_code}`" class="text-2xl font-semibold leading-tight hover:underline">{{ currentOrder.activity_name }}</RouterLink>
+                <RouterLink :to="`/${currentOrder.activity_code}`" class="text-2xl font-semibold leading-tight hover:underline">
+                  {{ currentOrder.activity_name }}
+                </RouterLink>
                 <p class="mt-2 text-sm text-stone-500">{{ currentOrder.order_title }}</p>
               </div>
               <dl class="mt-7 space-y-5 text-sm">
@@ -61,19 +67,7 @@
               </dl>
             </section>
 
-            <section class="mt-6 border border-stone-200 bg-white p-7 sm:p-9">
-              <div class="flex items-start justify-between gap-5">
-                <div>
-                  <p class="text-xs tracking-[0.2em] text-stone-500">凭证上传</p>
-                  <p class="mt-2 text-sm text-stone-500">最后上传期限：{{ formatDateTime(currentOrder.time_expired) }}</p>
-                </div>
-                <div class="flex shrink-0 items-center gap-2">
-                  <span class="text-xs text-stone-500">审核状态</span>
-                  <span :class="statusClass" class="inline-flex px-3 py-1.5 text-xs">{{ currentOrder.payout_status_string }}</span>
-                </div>
-              </div>
-              <p class="mt-6 border-l-2 border-amber-400 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-800">凭证上传功能将于 26 年 9 月 1 日后开放。</p>
-            </section>
+            <OrderEvidence :key="currentOrder.order_no" :order="currentOrder" />
           </div>
           <section v-else-if="orderLoading" class="mt-8 flex min-h-64 items-center justify-center border border-stone-200 bg-white" role="status">
             <div class="flex items-center gap-3 text-sm font-medium text-stone-700">
@@ -119,10 +113,10 @@
   import type { FundOrderItem, FundOrderListResponse } from '@/types/fund'
   import { formatDateTime, formatNumber } from '@/utils/format'
   import { startSignIn } from '@/utils/auth'
+  import UserAccount from '@/components/UserAccount.vue'
+  import OrderEvidence from '@/components/OrderEvidence.vue'
 
   const PAGE_SIZE = 1
-  const SUCCESS_STATUSES = new Set(['success', 'paid', 'done'])
-  const FAILED_STATUSES = new Set(['reject', 'failed'])
 
   const route = useRoute()
   const router = useRouter()
@@ -139,6 +133,7 @@
 
   const orderNo = computed(() => String(route.params.orderNo ?? '').trim())
   const totalPages = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)))
+
   useTitle('我的订单')
 
   watch(
@@ -223,14 +218,6 @@
   }
 
   function signOut() {
-    void sign.signOut()
+    sign.signOut()
   }
-
-  function statusTone(status: string) {
-    if (SUCCESS_STATUSES.has(status)) return 'bg-emerald-50 text-emerald-700'
-    if (FAILED_STATUSES.has(status)) return 'bg-rose-50 text-rose-700'
-    return 'bg-amber-50 text-amber-700'
-  }
-
-  const statusClass = computed(() => statusTone(currentOrder.value?.payout_status || 'default'))
 </script>

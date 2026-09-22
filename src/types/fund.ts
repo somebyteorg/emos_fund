@@ -34,6 +34,9 @@ export interface FundOrderItem {
   order_title: string
   footprint_post_id: string | number | null
   order_bodys: unknown
+  order_body_images: string[] | null
+  order_body_remark_user: string | null
+  order_body_upload_at: string | null
   tier_name: string
   tier_description: string | null
   tier_carrot: number
@@ -51,6 +54,14 @@ export interface FundOrderListResponse {
   page_size: number
   total: number
   items: FundOrderItem[]
+}
+
+export interface UploadTokenResponse {
+  type: string
+  file_id: string
+  data: {
+    upload_url: string
+  }
 }
 
 export interface ApiMessageResponse {

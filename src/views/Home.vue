@@ -4,6 +4,7 @@
       <header class="flex items-center justify-between">
         <p class="text-xs uppercase tracking-[0.32em] text-stone-500">emos基金会</p>
         <nav class="flex items-center gap-2">
+          <UserAccount v-if="sign.isSignedIn" />
           <RouterLink
             v-if="sign.isSignedIn"
             class="inline-flex h-9 items-center justify-center whitespace-nowrap rounded-md px-3 text-sm font-medium text-stone-600 transition hover:bg-stone-200/70 hover:text-stone-900"
@@ -36,6 +37,7 @@
   import { useTitle } from '@vueuse/core'
   import { useSignStore } from '@/stores/sign'
   import { startSignIn } from '@/utils/auth'
+  import UserAccount from '@/components/UserAccount.vue'
 
   useTitle('EMOS 基金会')
 
